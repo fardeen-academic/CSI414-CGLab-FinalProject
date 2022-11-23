@@ -3,7 +3,7 @@
 ![C++ project Using FreeGLUT](https://user-images.githubusercontent.com/43882976/203462169-cd1ab73d-f710-4870-952d-bfe5ef7c88cc.png)
 
 
-This project was created to fulfill the requirements of the course "Computer Graphics" at the Stamford University Bangladesh.
+This project was created to fulfill the requirements of the course "CSI 414 - Computer Graphics Sessional" at the Stamford University Bangladesh.
 
 ### Tools Used: OpenGL, C++, CodeBlocks
 
