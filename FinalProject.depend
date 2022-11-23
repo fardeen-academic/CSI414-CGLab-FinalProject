@@ -1,0 +1,8 @@
+# depslib dependency file v1.0
+1668366240 source:/home/fardeen/Documents/Summer 2022/CG Lab/FinalProject/main.cpp
+	<GLUT/glut.h>
+	<GL/glut.h>
+	<stdlib.h>
+	<stdio.h>
+	<math.h>
+
