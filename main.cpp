@@ -9,13 +9,15 @@
 #include <stdio.h>
 #include<math.h>
 
+bool animation = true;
+
 GLfloat isOpening = 0, isOpen=0, isClosing = 0, shipIsMoving=1;
 
 GLfloat translateX = 0, translateY = 0, translateRiver = 0;
 
 GLfloat carMoveX=-1, shipMoveY = 0;
 
-int dayState = 1;
+bool dayState = true;
 GLfloat sun1 = 255, sun2=145, sun3=0;
 GLfloat sky1 = 103, sky2=178, sky3=255;
 
@@ -36,8 +38,8 @@ GLfloat shipResize = 1;
 int trafficState = 2;
 
 void changeColor(){
-    if(dayState==0){
-        dayState=1;
+    if(!dayState){
+        dayState=!dayState;
         sun1 = 255;
         sun2=145;
         sun3=0;
@@ -48,7 +50,7 @@ void changeColor(){
         river2=128;
         river3=255;
     }else{
-        dayState=0;
+        dayState=!dayState;
         sun1=255;
         sun2=255;
         sun3=255;
@@ -235,6 +237,7 @@ void drawShip(){
 
 
     glPopMatrix();
+
     if(shipIsMoving==1){
         if(shipMoveY<900){
             shipMoveY+=0.02;
@@ -245,6 +248,7 @@ void drawShip(){
         shipMoveY=-730;
         shipResize=1;
     }
+
 
 }
 
@@ -396,24 +400,14 @@ void drawCar2(){
     glPopMatrix();
 }
 
-void display(){
-    glClear(GL_COLOR_BUFFER_BIT);
-
-
-    glBegin(GL_QUADS);
-    glColor3ub(river1, river2, river3);
-    glVertex2f(800,550);
-    glVertex2f(800,-450);
-    glVertex2f(-800,-450);
-    glVertex2f(-800,550);
-    glEnd();
-
+void water(){
     glPushMatrix();
-
     glTranslatef(translateRiver,0,0);
-    translateRiver+=0.01;
-    if(translateRiver>=800){
-        translateRiver=0;
+    if(animation){
+        translateRiver+=0.01;
+        if(translateRiver>=800){
+            translateRiver=0;
+        }
     }
     for(int i=-1600; i<=800; i+=220){
         for(int j=-400; j<=440; j+=80){
@@ -432,6 +426,91 @@ void display(){
     }
 
     glPopMatrix();
+}
+
+
+void animate(){
+
+    if(shipIsMoving==1){
+        if(shipMoveY<900){
+            shipMoveY+=0.02;
+        }
+    }
+
+    if (shipMoveY >= 800){
+        shipMoveY=-730;
+        shipResize=1;
+    }
+
+    //bridge opening
+
+    if(isOpening){
+        if(translateX<180){
+        translateX+=0.02;
+        translateY+=0.02;
+        }else{
+            isOpening = 0;
+        }
+    }else if(isClosing){
+
+        if(translateX<=50){
+            trafficState=1;
+        }
+        if(translateX>=0){
+        translateX-=0.015;
+        translateY-=0.015;
+        }else{
+            isClosing=0;
+            trafficState=2;
+        }
+    }
+
+    if(translateX>=170){
+        isOpen=1;
+        shipIsMoving=1;
+    }
+
+    if(shipMoveY>=200){
+        isOpen=0;
+        isClosing=1;
+    }
+
+    if(shipMoveY>=400){
+        shipResize+=0.0001;
+    }
+
+    if(carMoveX<-1600){
+        carMoveX=0;
+    }
+
+    if(shipMoveY>150){
+        shipIsMoving=0;
+    }
+
+    if(shipMoveY>150  && (carMoveX>-750 || carMoveX<-1600)){
+        isOpening=1;
+        trafficState=0;
+    }
+
+
+    if(isOpening==0 && isClosing==0 && isOpen==0){
+        carMoveX-=0.05;
+    }
+    glutPostRedisplay();
+}
+
+void display(){
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    glBegin(GL_QUADS);
+    glColor3ub(river1, river2, river3);
+    glVertex2f(800,550);
+    glVertex2f(800,-450);
+    glVertex2f(-800,-450);
+    glVertex2f(-800,550);
+    glEnd();
+
+    water();
 
 
     //road left
@@ -761,11 +840,13 @@ void display(){
     glVertex2f(400,55);
     glEnd();
 
+
     drawCar();
     drawCar2();
     drawShip();
     trafficLight();
     sky();
+
 
 
 
@@ -776,63 +857,9 @@ void display(){
         glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, text[z]);
     }
 
-
-    if(shipMoveY>150){
-        shipIsMoving=0;
+    if(animation){
+        animate();
     }
-
-    if(shipMoveY>150  && (carMoveX>-750 || carMoveX<-1600)){
-        isOpening=1;
-        trafficState=0;
-    }
-
-
-    if(isOpening==0 && isClosing==0 && isOpen==0){
-        carMoveX-=0.05;
-    }
-
-
-    //bridge opening
-
-    if(isOpening){
-        if(translateX<180){
-        translateX+=0.02;
-        translateY+=0.02;
-        }else{
-            isOpening = 0;
-        }
-    }else if(isClosing){
-
-        if(translateX<=50){
-            trafficState=1;
-        }
-        if(translateX>=0){
-        translateX-=0.015;
-        translateY-=0.015;
-        }else{
-            isClosing=0;
-            trafficState=2;
-        }
-    }
-
-    if(translateX>=180){
-        isOpen=1;
-        shipIsMoving=1;
-    }
-
-    if(shipMoveY>=200){
-        isOpen=0;
-        isClosing=1;
-    }
-
-    if(shipMoveY>=400){
-        shipResize+=0.0001;
-    }
-
-    if(carMoveX<-1600){
-        carMoveX=0;
-    }
-
     glutPostRedisplay();
     glFlush();
 }
@@ -848,12 +875,21 @@ void keyboard(unsigned char key, int x, int y){
             case 'E':
                 exit(0);
                 break;
+            case ' ':
+                animation =!animation;
+                break;
     }
 }
 
 void menu(int key){
     if(key==0){
         exit(0);
+    }else if (key==1){
+        changeColor();
+    }
+    else if (key==2){
+        animation=!animation;
+        glutPostRedisplay();
     }
 }
 
@@ -869,7 +905,10 @@ int main(int a, char * *b){
     glutKeyboardFunc(keyboard);
 
     glutCreateMenu(menu);
-    glutAddMenuEntry("QUIT\t", 0);
+    glutAddMenuEntry("Change Day/Night Mode", 1);
+    glutAddMenuEntry("Start/Stop Animation", 2);
+
+    glutAddMenuEntry("QUIT", 0);
     glutAttachMenu(GLUT_RIGHT_BUTTON);
 
     glutMainLoop();
