@@ -1,11 +1,10 @@
-//Create a readme file for this project
-//This is a readme file for this project
+# FreeGlut project Using OpenGL
 
 This project was created to fulfill the requirements of the course "Computer Graphics" at the Stamford University Bangladesh.
 
-Tools Used: OpenGL, C++, CodeBlocks
+### Tools Used: OpenGL, C++, CodeBlocks
 
-How to run the project:
+### How to run the project ✨
 
 1. Clone the repository
 
@@ -19,4 +18,8 @@ How to run the project:
 
 6. If release mode doesn't work, try to run the project in any Linux OS.
 
-7. Enjoy!
+7. Enjoy! 🔥
+
+### Edit Source Code 📝
+
+You can edit the **main.cpp** file to edit any component of the project.
